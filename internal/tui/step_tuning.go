@@ -19,7 +19,7 @@ func (m *AppModel) updateTuning(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.Cursor--
 			}
 		case "down", "j":
-			if m.Cursor < 4 {
+			if m.Cursor < 6 {
 				m.Cursor++
 			}
 		case " ":
@@ -35,12 +35,24 @@ func (m *AppModel) updateTuning(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case 1:
 				m.TuningConfig.BypassTPMAndOOBE = !m.TuningConfig.BypassTPMAndOOBE
 			case 2:
-				m.TuningConfig.MASActivationPrompt = !m.TuningConfig.MASActivationPrompt
+				m.TuningConfig.LookingGlassEnabled = !m.TuningConfig.LookingGlassEnabled
 			case 3:
 				m.TuningConfig.VirtIOSCSI = !m.TuningConfig.VirtIOSCSI
+			case 4:
+				m.TuningConfig.MASActivationPrompt = !m.TuningConfig.MASActivationPrompt
+			case 5:
+				// Cycle audio
+				switch m.TuningConfig.AudioBackend {
+				case "scream":
+					m.TuningConfig.AudioBackend = "ich9"
+				case "ich9":
+					m.TuningConfig.AudioBackend = "hda"
+				default:
+					m.TuningConfig.AudioBackend = "scream"
+				}
 			}
 		case "enter":
-			if m.Cursor == 4 {
+			if m.Cursor == 6 {
 				m.Step = StepExecution
 				m.IsLoading = true
 				return m, m.startCreationCmd()
@@ -91,20 +103,28 @@ func (m *AppModel) viewTuning() string {
 
 	rows = append(rows, "")
 	rows = append(rows, checkOption(1, "Bypass Win11 TPM 2.0, Secure Boot, & MS Account OOBE", m.TuningConfig.BypassTPMAndOOBE))
-	rows = append(rows, checkOption(2, "Run Microsoft Activation Scripts (MAS) on First Logon", m.TuningConfig.MASActivationPrompt))
+	rows = append(rows, checkOption(2, "Looking Glass IVSHMEM Support (Low-Latency Display)", m.TuningConfig.LookingGlassEnabled))
 	rows = append(rows, checkOption(3, "VirtIO SCSI Storage & 10G VirtIO Network Drivers", m.TuningConfig.VirtIOSCSI))
+	rows = append(rows, checkOption(4, "Run Microsoft Activation Scripts (MAS) on First Logon", m.TuningConfig.MASActivationPrompt))
+
+	cursor5 := "  "
+	if m.Cursor == 5 {
+		cursor5 = "❯ "
+	}
+	rows = append(rows, fmt.Sprintf("%sAudio Backend: %s (Press [Space] to cycle)", cursor5,
+		lipgloss.NewStyle().Foreground(PrimaryColor).Bold(true).Render(strings.ToUpper(m.TuningConfig.AudioBackend))))
 
 	rows = append(rows, "")
-	cursor4 := "  "
-	style4 := ListItemNormal
-	if m.Cursor == 4 {
-		cursor4 = "❯ "
-		style4 = ListItemSelected
+	cursor6 := "  "
+	style6 := ListItemNormal
+	if m.Cursor == 6 {
+		cursor6 = "❯ "
+		style6 = ListItemSelected
 	}
-	rows = append(rows, fmt.Sprintf("%s%s", cursor4, style4.Render("🚀 Build & Configure Virtual Machine")))
+	rows = append(rows, fmt.Sprintf("%s%s", cursor6, style6.Render("🚀 Build & Configure Virtual Machine")))
 
 	card := InfoCard.Render(strings.Join(rows, "\n"))
-	help := HelpStyle.Render("Use [↑/↓] navigate • [Space] toggle • [Enter] build • [b] back")
+	help := HelpStyle.Render("Use [↑/↓] navigate • [Space] toggle/cycle • [Enter] build • [b] back")
 
 	return lipgloss.JoinVertical(lipgloss.Left, card, help)
 }

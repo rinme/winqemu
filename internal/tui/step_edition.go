@@ -6,6 +6,8 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+
+	"winqemu/pkg/downloader"
 )
 
 // Family Selection
@@ -116,7 +118,13 @@ func (m *AppModel) viewEditionSelect() string {
 			currentRec = ed.Recommendation
 		}
 
-		line := fmt.Sprintf("%s%s", cursorStr, itemStyle.Render(ed.Name))
+		cached, _, _ := downloader.IsISOCached(ed.ID, ed.Architecture, "")
+		cachedBadge := ""
+		if cached {
+			cachedBadge = SuccessStyle.Render(" [Cached - Ready]")
+		}
+
+		line := fmt.Sprintf("%s%s%s", cursorStr, itemStyle.Render(ed.Name), cachedBadge)
 		if ed.IsRecommended {
 			line += BadgeRecommended.Render("⭐ Recommended by WispyDocs")
 		}

@@ -15,15 +15,15 @@ func (m *AppModel) updateHardware(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "tab", "down":
-			m.Cursor = (m.Cursor + 1) % 4
+			m.Cursor = (m.Cursor + 1) % 5
 			m.updateFocus()
 			return m, nil
 		case "shift+tab", "up":
-			m.Cursor = (m.Cursor + 3) % 4
+			m.Cursor = (m.Cursor + 4) % 5
 			m.updateFocus()
 			return m, nil
 		case "enter":
-			if m.Cursor < 3 {
+			if m.Cursor < 4 {
 				m.Cursor++
 				m.updateFocus()
 				return m, nil
@@ -49,6 +49,8 @@ func (m *AppModel) updateHardware(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.CPUInput, cmd = m.CPUInput.Update(msg)
 	case 3:
 		m.DiskInput, cmd = m.DiskInput.Update(msg)
+	case 4:
+		m.StorageDirInput, cmd = m.StorageDirInput.Update(msg)
 	}
 	cmds = append(cmds, cmd)
 
@@ -60,6 +62,7 @@ func (m *AppModel) updateFocus() {
 	m.RAMInput.Blur()
 	m.CPUInput.Blur()
 	m.DiskInput.Blur()
+	m.StorageDirInput.Blur()
 
 	switch m.Cursor {
 	case 0:
@@ -70,6 +73,8 @@ func (m *AppModel) updateFocus() {
 		m.CPUInput.Focus()
 	case 3:
 		m.DiskInput.Focus()
+	case 4:
+		m.StorageDirInput.Focus()
 	}
 }
 
@@ -82,6 +87,7 @@ func (m *AppModel) viewHardware() string {
 	rows = append(rows, fmt.Sprintf("%-24s %s MB (Host: %d MB)", "RAM Allocation:", m.RAMInput.View(), m.Host.TotalRAMMB))
 	rows = append(rows, fmt.Sprintf("%-24s %s Cores (Host: %d CPUs)", "vCPU Cores:", m.CPUInput.View(), m.Host.LogicalCPUs))
 	rows = append(rows, fmt.Sprintf("%-24s %s GB (Sparse qcow2 disk)", "Virtual Disk Size:", m.DiskInput.View()))
+	rows = append(rows, fmt.Sprintf("%-24s %s", "Storage Directory:", m.StorageDirInput.View()))
 
 	card := InfoCard.Render(strings.Join(rows, "\n"))
 	help := HelpStyle.Render("Use [Tab] / [Enter] to cycle fields • [b] back • [q] quit")

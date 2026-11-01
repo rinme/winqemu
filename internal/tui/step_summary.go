@@ -35,8 +35,11 @@ func (m *AppModel) startCreationCmd() tea.Cmd {
 			diskGB = 64
 		}
 
-		home, _ := os.UserHomeDir()
-		vmDir := filepath.Join(home, ".local", "share", "winqemu", "vms", vmName)
+		storageRoot := strings.TrimSpace(m.StorageDirInput.Value())
+		if storageRoot == "" {
+			storageRoot = vm.GetDefaultStorageDir()
+		}
+		vmDir := filepath.Join(storageRoot, vmName)
 		_ = os.MkdirAll(vmDir, 0755)
 
 		// 1. Generate autounattend.xml and floppy image

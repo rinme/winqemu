@@ -30,6 +30,7 @@ const (
 	StepTuning
 	StepExecution
 	StepDone
+	StepVMManager
 )
 
 type DownloadMsg downloader.Progress
@@ -70,10 +71,14 @@ type AppModel struct {
 	ProgressBar   progress.Model
 
 	// Hardware Inputs
-	VMNameInput textinput.Model
-	RAMInput    textinput.Model
-	CPUInput    textinput.Model
-	DiskInput   textinput.Model
+	VMNameInput     textinput.Model
+	RAMInput        textinput.Model
+	CPUInput        textinput.Model
+	DiskInput       textinput.Model
+	StorageDirInput textinput.Model
+
+	// Existing VMs
+	ExistingVMs []vm.ExistingVM
 
 	// VM Creation Result
 	Result *vm.CreationResult
@@ -129,6 +134,11 @@ func NewAppModel() (*AppModel, error) {
 	diskInput.SetValue("64")
 	diskInput.Width = 10
 
+	storageDirInput := textinput.New()
+	storageDirInput.Placeholder = vm.GetDefaultStorageDir()
+	storageDirInput.SetValue(vm.GetDefaultStorageDir())
+	storageDirInput.Width = 40
+
 	prog := progress.New(progress.WithDefaultGradient())
 
 	// Default family: Windows 11
@@ -137,18 +147,22 @@ func NewAppModel() (*AppModel, error) {
 		fam = &cat.Families[0]
 	}
 
+	existing, _ := vm.ScanExistingVMs("")
+
 	return &AppModel{
-		Step:           StepWelcome,
-		Host:           host,
-		Catalog:        cat,
-		SelectedFamily: fam,
-		TuningConfig:   tuning.GetPreset(tuning.ProfileGaming, true),
-		LocalISOInput:  isoInput,
-		VMNameInput:    vmNameInput,
-		RAMInput:       ramInput,
-		CPUInput:       cpuInput,
-		DiskInput:      diskInput,
-		ProgressBar:    prog,
+		Step:            StepWelcome,
+		Host:            host,
+		Catalog:         cat,
+		SelectedFamily:  fam,
+		TuningConfig:    tuning.GetPreset(tuning.ProfileGaming, true),
+		LocalISOInput:   isoInput,
+		VMNameInput:     vmNameInput,
+		RAMInput:        ramInput,
+		CPUInput:        cpuInput,
+		DiskInput:       diskInput,
+		StorageDirInput: storageDirInput,
+		ProgressBar:     prog,
+		ExistingVMs:     existing,
 	}, nil
 }
 
@@ -238,6 +252,8 @@ func (m *AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m.updateExecution(msg)
 	case StepDone:
 		return m.updateDone(msg)
+	case StepVMManager:
+		return m.updateVMManager(msg)
 	}
 
 	return m, nil
@@ -266,6 +282,8 @@ func (m *AppModel) View() string {
 		body = m.viewExecution()
 	case StepDone:
 		body = m.viewDone()
+	case StepVMManager:
+		body = m.viewVMManager()
 	}
 
 	header := HeaderBox.Render(
@@ -300,6 +318,8 @@ func (m *AppModel) stepTitle() string {
 		return "Building VM Artifacts & Configuration"
 	case StepDone:
 		return "VM Ready"
+	case StepVMManager:
+		return "Existing Virtual Machines Manager"
 	default:
 		return "Setup"
 	}
