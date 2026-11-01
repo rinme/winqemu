@@ -108,6 +108,18 @@ func BuildQEMUArgs(cfg *VMConfig) []string {
 
 	args = append(args, "-usb", "-device", "usb-tablet")
 
+	// Looking Glass IVSHMEM shared memory device
+	if cfg.Tuning.LookingGlassEnabled {
+		memMB := cfg.Tuning.LookingGlassMemMB
+		if memMB <= 0 {
+			memMB = 64
+		}
+		args = append(args,
+			"-device", "ivshmem-plain,memdev=ivshmem0",
+			"-object", fmt.Sprintf("memory-backend-file,id=ivshmem0,share=on,mem-path=/dev/shm/looking-glass,size=%dM", memMB),
+		)
+	}
+
 	return args
 }
 

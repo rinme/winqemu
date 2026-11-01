@@ -35,6 +35,8 @@ type OptimizationConfig struct {
 	VirtIOBalloon       bool        `json:"virtio_balloon"`
 	SpiceGuestTools     bool        `json:"spice_guest_tools"`
 	AudioBackend        string      `json:"audio_backend"` // "ich9", "hda", "scream"
+	LookingGlassEnabled bool        `json:"looking_glass_enabled"`
+	LookingGlassMemMB   int         `json:"looking_glass_mem_mb"`
 	TPM2Emulation       bool        `json:"tpm2_emulation"`
 	SecureBoot          bool        `json:"secure_boot"`
 	BypassTPMAndOOBE    bool        `json:"bypass_tpm_and_oobe"`

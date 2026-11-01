@@ -40,6 +40,10 @@ func TestBuildQEMUArgs(t *testing.T) {
 	if !strings.Contains(argStr, "virtio-scsi-pci") {
 		t.Errorf("expected virtio-scsi-pci in args, got: %s", argStr)
 	}
+
+	if !strings.Contains(argStr, "ivshmem-plain") {
+		t.Errorf("expected ivshmem-plain for Looking Glass, got: %s", argStr)
+	}
 }
 
 func TestGenerateLibvirtXML(t *testing.T) {
@@ -75,6 +79,36 @@ func TestGenerateLibvirtXML(t *testing.T) {
 
 	if !strings.Contains(xml, "<tpm model='tpm-crb'>") {
 		t.Errorf("expected tpm-crb in XML for Win11, got: %s", xml)
+	}
+
+	if !strings.Contains(xml, "<shmem name='looking-glass'>") {
+		t.Errorf("expected shmem looking-glass in XML, got: %s", xml)
+	}
+}
+
+func TestScanExistingVMs(t *testing.T) {
+	tmpDir, err := os.MkdirTemp("", "winqemu-scan-test-*")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	vmDir := filepath.Join(tmpDir, "MyTestVM")
+	_ = os.MkdirAll(vmDir, 0755)
+	_ = os.WriteFile(filepath.Join(vmDir, "MyTestVM.qcow2"), []byte("qcow2 dummy data"), 0644)
+	_ = os.WriteFile(filepath.Join(vmDir, "start-vm.sh"), []byte("#!/bin/bash\n"), 0755)
+
+	vms, err := ScanExistingVMs(tmpDir)
+	if err != nil {
+		t.Fatalf("scan failed: %v", err)
+	}
+
+	if len(vms) != 1 {
+		t.Fatalf("expected 1 VM, got %d", len(vms))
+	}
+
+	if vms[0].Name != "MyTestVM" {
+		t.Errorf("expected VM name MyTestVM, got %s", vms[0].Name)
 	}
 }
 

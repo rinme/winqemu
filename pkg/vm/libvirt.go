@@ -106,6 +106,12 @@ const libvirtDomainTemplate = `<domain type='kvm'>
       <model type='qxl' ram='65536' vram='65536' vgamem='16384' heads='1' primary='yes'/>
     </video>
     <sound model='ich9'/>
+    {{if .Tuning.LookingGlassEnabled}}
+    <shmem name='looking-glass'>
+      <model type='ivshmem-plain'/>
+      <size unit='M'>{{if .Tuning.LookingGlassMemMB}}{{.Tuning.LookingGlassMemMB}}{{else}}64{{end}}</size>
+    </shmem>
+    {{end}}
   </devices>
 </domain>
 `

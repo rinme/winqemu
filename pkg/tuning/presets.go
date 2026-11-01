@@ -26,6 +26,8 @@ func GetPreset(profile ProfileType, isWin11 bool) OptimizationConfig {
 			VirtIOBalloon:       false, // Ballooning adds latency during heavy gaming
 			SpiceGuestTools:     true,
 			AudioBackend:        "scream",
+			LookingGlassEnabled: true,
+			LookingGlassMemMB:   64,
 			TPM2Emulation:       isWin11,
 			SecureBoot:          isWin11,
 			BypassTPMAndOOBE:    isWin11,
@@ -56,6 +58,8 @@ func GetPreset(profile ProfileType, isWin11 bool) OptimizationConfig {
 			VirtIOBalloon:       true,
 			SpiceGuestTools:     true,
 			AudioBackend:        "ich9",
+			LookingGlassEnabled: false,
+			LookingGlassMemMB:   32,
 			TPM2Emulation:       isWin11,
 			SecureBoot:          isWin11,
 			BypassTPMAndOOBE:    isWin11,

@@ -26,6 +26,30 @@ type Progress struct {
 	Done            bool
 }
 
+// GetDefaultCacheDir returns the default ISO storage directory (~/.cache/winqemu/iso).
+func GetDefaultCacheDir() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "/var/tmp/winqemu/iso"
+	}
+	return filepath.Join(home, ".cache", "winqemu", "iso")
+}
+
+// IsISOCached checks whether a genuine ISO is already downloaded in cache.
+func IsISOCached(editionID, arch, customDir string) (bool, string, int64) {
+	cacheDir := customDir
+	if cacheDir == "" {
+		cacheDir = GetDefaultCacheDir()
+	}
+
+	target := filepath.Join(cacheDir, fmt.Sprintf("%s-%s.iso", editionID, arch))
+	fi, err := os.Stat(target)
+	if err == nil && fi.Size() > 100*1024*1024 {
+		return true, target, fi.Size()
+	}
+	return false, target, 0
+}
+
 // Downloader manages HTTP downloads with resume and verification.
 type Downloader struct {
 	client *http.Client
