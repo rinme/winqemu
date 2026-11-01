@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    name: Build & Release Binaries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache: true
+
+      - name: Build Cross-Platform Binaries
+        run: |
+          mkdir -p dist
+          
+          # Linux AMD64
+          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o dist/winqemu-linux-amd64 ./cmd/winqemu
+          tar -czf dist/winqemu-linux-amd64.tar.gz -C dist winqemu-linux-amd64
+          
+          # Linux ARM64
+          GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o dist/winqemu-linux-arm64 ./cmd/winqemu
+          tar -czf dist/winqemu-linux-arm64.tar.gz -C dist winqemu-linux-arm64
+          
+          # macOS AMD64 (Intel)
+          GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o dist/winqemu-darwin-amd64 ./cmd/winqemu
+          tar -czf dist/winqemu-darwin-amd64.tar.gz -C dist winqemu-darwin-amd64
+          
+          # macOS ARM64 (Apple Silicon)
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o dist/winqemu-darwin-arm64 ./cmd/winqemu
+          tar -czf dist/winqemu-darwin-arm64.tar.gz -C dist winqemu-darwin-arm64
+          
+          # Windows AMD64
+          GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o dist/winqemu.exe ./cmd/winqemu
+          zip -j dist/winqemu-windows-amd64.zip dist/winqemu.exe LICENSE README.md
+
+      - name: Generate Checksums
+        run: |
+          cd dist
+          sha256sum *.tar.gz *.zip > checksums.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/checksums.txt
+          generate_release_notes: true

@@ -1,0 +1,58 @@
+name: "🐛 Bug Report"
+description: "File a bug or unexpected behavior in WinQEMU"
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: host-os
+    attributes:
+      label: Host Operating System & Distribution
+      description: "e.g., Arch Linux (rolling), Ubuntu 24.04 LTS, macOS Sequoia, Fedora 40"
+      placeholder: "e.g., Arch Linux (Linux 6.11-arch)"
+    validations:
+      required: true
+  - type: dropdown
+    id: win-edition
+    attributes:
+      label: Windows Edition Selected
+      options:
+        - "Windows 11 IoT Enterprise LTSC 2024"
+        - "Windows 11 Enterprise LTSC 2024"
+        - "Windows 11 Pro 24H2"
+        - "Windows 11 Home 24H2"
+        - "Windows 10 IoT Enterprise LTSC 2021"
+        - "Windows 10 Pro 22H2"
+        - "Windows 8.1"
+        - "Windows 7 SP1"
+        - "Other / Local ISO"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear and concise description of what the bug is.
+      placeholder: "When choosing ..., the application ..."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps To Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Run './bin/winqemu'
+        2. Select '...'
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Log Output or Screenshots
+      description: Please copy and paste any terminal output or error messages.
+      render: shell
