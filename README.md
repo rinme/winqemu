@@ -46,7 +46,7 @@ Built with Go, Charm [Bubble Tea](https://github.com/charmbracelet/bubbletea), a
 ### Building and Running
 ```bash
 # Clone the repository
-git clone https://github.com/winqemu/winqemu.git
+git clone https://github.com/rinme/winqemu.git
 cd winqemu
 
 # Build the executable
