@@ -1,0 +1,4 @@
+bin/
+*.iso
+*.qcow2
+*.vfd

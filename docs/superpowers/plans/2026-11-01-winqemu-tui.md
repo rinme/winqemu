@@ -32,10 +32,10 @@
 - Create: `pkg/tuning/types.go`
 - Create: `pkg/vm/types.go`
 
-- [ ] **Step 1: Initialize go.mod and install dependencies**
-- [ ] **Step 2: Define Catalog, System, Tuning, and VM configuration structs**
-- [ ] **Step 3: Verify module compiles with `go test ./...`**
-- [ ] **Step 4: Commit**
+- [x] **Step 1: Initialize go.mod and install dependencies**
+- [x] **Step 2: Define Catalog, System, Tuning, and VM configuration structs**
+- [x] **Step 3: Verify module compiles with `go test ./...`**
+- [x] **Step 4: Commit**
 
 ---
 
@@ -46,11 +46,11 @@
 - Create: `pkg/sysinfo/packages.go`
 - Create: `pkg/sysinfo/detector_test.go`
 
-- [ ] **Step 1: Write tests for OS and Linux distro detection (`/etc/os-release` parsing)**
-- [ ] **Step 2: Implement OS detection (Arch, Debian, Ubuntu, Fedora, openSUSE, macOS, Windows)**
-- [ ] **Step 3: Implement dependency checking (qemu-system-x86_64, virsh, virt-install, swtpm, ovmf) and install command generation for pacman, apt, dnf, zypper, brew, winget**
-- [ ] **Step 4: Run tests and verify with `go test ./pkg/sysinfo/...`**
-- [ ] **Step 5: Commit**
+- [x] **Step 1: Write tests for OS and Linux distro detection (`/etc/os-release` parsing)**
+- [x] **Step 2: Implement OS detection (Arch, Debian, Ubuntu, Fedora, openSUSE, macOS, Windows)**
+- [x] **Step 3: Implement dependency checking (qemu-system-x86_64, virsh, virt-install, swtpm, ovmf) and install command generation for pacman, apt, dnf, zypper, brew, winget**
+- [x] **Step 4: Run tests and verify with `go test ./pkg/sysinfo/...`**
+- [x] **Step 5: Commit**
 
 ---
 
@@ -61,11 +61,11 @@
 - Create: `pkg/catalog/catalog.go`
 - Create: `pkg/catalog/catalog_test.go`
 
-- [ ] **Step 1: Create catalog data containing Windows 11 (IoT Enterprise LTSC, Enterprise LTSC, Pro, Home with WispyDocs recommendation badges), Windows 10, Windows 8.1, and Windows 7, with official Massgrave links and SHA256 hashes**
-- [ ] **Step 2: Embed catalog via `//go:embed` and implement query/filter functions (by OS family, edition, recommendation status)**
-- [ ] **Step 3: Implement optional dynamic fetcher to check for updated Massgrave links**
-- [ ] **Step 4: Write unit tests verifying catalog validity, lookups, and recommendations**
-- [ ] **Step 5: Run tests and commit**
+- [x] **Step 1: Create catalog data containing Windows 11 (IoT Enterprise LTSC, Enterprise LTSC, Pro, Home with WispyDocs recommendation badges), Windows 10, Windows 8.1, and Windows 7, with official Massgrave links and SHA256 hashes**
+- [x] **Step 2: Embed catalog via `//go:embed` and implement query/filter functions (by OS family, edition, recommendation status)**
+- [x] **Step 3: Implement optional dynamic fetcher to check for updated Massgrave links**
+- [x] **Step 4: Write unit tests verifying catalog validity, lookups, and recommendations**
+- [x] **Step 5: Run tests and commit**
 
 ---
 
@@ -75,10 +75,10 @@
 - Create: `pkg/downloader/downloader.go`
 - Create: `pkg/downloader/downloader_test.go`
 
-- [ ] **Step 1: Write unit tests for HTTP downloader with mock server, testing resume (`Range` header) and SHA-256 verification**
-- [ ] **Step 2: Implement downloader emitting progress updates (bytes transferred, total bytes, speed, percentage)**
-- [ ] **Step 3: Add VirtIO ISO automated fetcher (`virtio-win.iso` latest release from Fedora)**
-- [ ] **Step 4: Run tests and commit**
+- [x] **Step 1: Write unit tests for HTTP downloader with mock server, testing resume (`Range` header) and SHA-256 verification**
+- [x] **Step 2: Implement downloader emitting progress updates (bytes transferred, total bytes, speed, percentage)**
+- [x] **Step 3: Add VirtIO ISO automated fetcher (`virtio-win.iso` latest release from Fedora)**
+- [x] **Step 4: Run tests and commit**
 
 ---
 
@@ -89,10 +89,10 @@
 - Create: `pkg/unattend/fatdisk.go`
 - Create: `pkg/unattend/generator_test.go`
 
-- [ ] **Step 1: Write unit tests verifying `autounattend.xml` template generation for Windows 7, 10, and 11 (including TPM/RAM bypass registry keys and VirtIO driver search paths)**
-- [ ] **Step 2: Implement `autounattend.xml` generator supporting edition selection and bypass flags**
-- [ ] **Step 3: Implement pure Go FAT32/ISO secondary disk image creator containing `autounattend.xml`**
-- [ ] **Step 4: Run tests and commit**
+- [x] **Step 1: Write unit tests verifying `autounattend.xml` template generation for Windows 7, 10, and 11 (including TPM/RAM bypass registry keys and VirtIO driver search paths)**
+- [x] **Step 2: Implement `autounattend.xml` generator supporting edition selection and bypass flags**
+- [x] **Step 3: Implement pure Go FAT32/ISO secondary disk image creator containing `autounattend.xml`**
+- [x] **Step 4: Run tests and commit**
 
 ---
 
@@ -104,12 +104,12 @@
 - Create: `pkg/vm/libvirt.go`
 - Create: `pkg/vm/vm_test.go`
 
-- [ ] **Step 1: Implement "Balanced" and "Maximum Gaming / Low-Latency" presets (Hyper-V flags, CPU pinning/topology, hugepages, Scream audio)**
-- [ ] **Step 2: Implement Libvirt Domain XML generation and `virt-install` invocation generator for Linux/virt-manager**
-- [ ] **Step 3: Implement native standalone QEMU launcher script generation (`run.sh` / `run.bat`) for macOS (`-accel hvf`) and Windows (`-accel whpx`)**
-- [ ] **Step 4: Implement `qemu-img` disk creator for qcow2 sparse disks**
-- [ ] **Step 5: Write unit tests verifying generated command line arguments and XML correctness**
-- [ ] **Step 6: Run tests and commit**
+- [x] **Step 1: Implement "Balanced" and "Maximum Gaming / Low-Latency" presets (Hyper-V flags, CPU pinning/topology, hugepages, Scream audio)**
+- [x] **Step 2: Implement Libvirt Domain XML generation and `virt-install` invocation generator for Linux/virt-manager**
+- [x] **Step 3: Implement native standalone QEMU launcher script generation (`run.sh` / `run.bat`) for macOS (`-accel hvf`) and Windows (`-accel whpx`)**
+- [x] **Step 4: Implement `qemu-img` disk creator for qcow2 sparse disks**
+- [x] **Step 5: Write unit tests verifying generated command line arguments and XML correctness**
+- [x] **Step 6: Run tests and commit**
 
 ---
 
@@ -127,14 +127,14 @@
 - Create: `internal/tui/step_summary.go`
 - Create: `cmd/winqemu/main.go`
 
-- [ ] **Step 1: Implement styling and wizard navigation state machine**
-- [ ] **Step 2: Implement Step 1 (Welcome & OS detection) and Step 2 (Dependency check & auto-installer)**
-- [ ] **Step 3: Implement Step 3 (WispyDocs Windows ISO selector with badges) and Step 4 (Downloader with live progress bar & local file picker)**
-- [ ] **Step 4: Implement Step 5 (Hardware resource review) and Step 6 (Tuning & QoL presets)**
-- [ ] **Step 5: Implement Step 7 (Summary, VM generation, and Launch / virt-manager trigger)**
-- [ ] **Step 6: Create `main.go` entry point**
-- [ ] **Step 7: Build binary with `go build -o bin/winqemu ./cmd/winqemu` and test execution**
-- [ ] **Step 8: Commit**
+- [x] **Step 1: Implement styling and wizard navigation state machine**
+- [x] **Step 2: Implement Step 1 (Welcome & OS detection) and Step 2 (Dependency check & auto-installer)**
+- [x] **Step 3: Implement Step 3 (WispyDocs Windows ISO selector with badges) and Step 4 (Downloader with live progress bar & local file picker)**
+- [x] **Step 4: Implement Step 5 (Hardware resource review) and Step 6 (Tuning & QoL presets)**
+- [x] **Step 5: Implement Step 7 (Summary, VM generation, and Launch / virt-manager trigger)**
+- [x] **Step 6: Create `main.go` entry point**
+- [x] **Step 7: Build binary with `go build -o bin/winqemu ./cmd/winqemu` and test execution**
+- [x] **Step 8: Commit**
 
 ---
 
@@ -144,7 +144,7 @@
 - Create: `README.md`
 - Create: `Makefile`
 
-- [ ] **Step 1: Build release binary and verify `--help` and interactive flags**
-- [ ] **Step 2: Run all unit and integration tests across packages**
-- [ ] **Step 3: Write comprehensive README explaining cross-platform support, WispyDocs recommendations, and virt-manager integration**
-- [ ] **Step 4: Commit and present to user**
+- [x] **Step 1: Build release binary and verify `--help` and interactive flags**
+- [x] **Step 2: Run all unit and integration tests across packages**
+- [x] **Step 3: Write comprehensive README explaining cross-platform support, WispyDocs recommendations, and virt-manager integration**
+- [x] **Step 4: Commit and present to user**
