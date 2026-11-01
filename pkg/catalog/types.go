@@ -15,6 +15,9 @@ type Edition struct {
 	Recommendation  string   `json:"recommendation"`   // Reasoning note from WispyDocs
 	ProductKey      string   `json:"product_key"`      // Generic installation key / KMS client key
 	IsWin11         bool     `json:"is_win11"`
+	MSDLProductID   string   `json:"msdl_product_id,omitempty"` // MSDL consumer product ID (e.g. "3813" for Win11 26H2, "2618" for Win10)
+	MSDLEvalSlug    string   `json:"msdl_eval_slug,omitempty"`  // MSDL evaluation/enterprise slug (e.g. "win11-ent", "server-2025")
+	Badge           string   `json:"badge,omitempty"`           // Badge: "LATEST", "STABLE", "EOL", "WISPY"
 }
 
 // OSFamily represents a Windows generation (e.g., Windows 11, Windows 10, Windows 8.1, Windows 7).

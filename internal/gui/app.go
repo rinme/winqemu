@@ -16,6 +16,7 @@ import (
 
 	"winqemu/pkg/catalog"
 	"winqemu/pkg/downloader"
+	"winqemu/pkg/msdl"
 	"winqemu/pkg/sysinfo"
 	"winqemu/pkg/tuning"
 	"winqemu/pkg/unattend"
@@ -127,13 +128,6 @@ func RunGUI() error {
 				return
 			}
 
-			if ed.DownloadURL == "" {
-				w.Dispatch(func() {
-					w.Eval("window.onDownloadProgress(0, '0 MB/s', false, 'No direct download URL configured')")
-				})
-				return
-			}
-
 			home, _ := os.UserHomeDir()
 			cacheDir := filepath.Join(home, ".cache", "winqemu", "iso")
 			_ = os.MkdirAll(cacheDir, 0755)
@@ -147,14 +141,23 @@ func RunGUI() error {
 				return
 			}
 
+			activeURL, provider := msdl.ResolveLiveDownloadURL(context.Background(), ed)
+			if activeURL == "" {
+				w.Dispatch(func() {
+					w.Eval("window.onDownloadProgress(0, '0 MB/s', false, 'No download URL configured or resolved')")
+				})
+				return
+			}
+
 			dl := downloader.NewDownloader()
 			dl.MinBytes = 100 * 1024 * 1024
-			err := dl.Download(context.Background(), ed.DownloadURL, dest, "", func(p downloader.Progress) {
+			err := dl.Download(context.Background(), activeURL, dest, "", func(p downloader.Progress) {
 				w.Dispatch(func() {
-					w.Eval(fmt.Sprintf("window.onDownloadProgress(%.1f, '%.1f MB/s', false, '', %.2f, %.2f)",
+					w.Eval(fmt.Sprintf("window.onDownloadProgress(%.1f, '%.1f MB/s', false, '', %.2f, %.2f, %q)",
 						p.Percent, p.SpeedBytesSec/(1024*1024),
 						float64(p.BytesDownloaded)/(1024*1024*1024),
-						float64(p.TotalBytes)/(1024*1024*1024)))
+						float64(p.TotalBytes)/(1024*1024*1024),
+						provider))
 				})
 			})
 

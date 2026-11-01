@@ -125,15 +125,21 @@ func (m *AppModel) viewEditionSelect() string {
 		}
 
 		line := fmt.Sprintf("%s%s%s", cursorStr, itemStyle.Render(ed.Name), cachedBadge)
+		if ed.Badge == "LATEST" {
+			line += lipgloss.NewStyle().Foreground(lipgloss.Color("#00FF88")).Bold(true).Render(" [⚡ 26H2]")
+		}
+		if ed.MSDLProductID != "" || ed.MSDLEvalSlug != "" {
+			line += lipgloss.NewStyle().Foreground(lipgloss.Color("#00DFFF")).Render(" [MSDL]")
+		}
 		if ed.IsRecommended {
-			line += BadgeRecommended.Render("⭐ Recommended by WispyDocs")
+			line += BadgeRecommended.Render(" ⭐ Wispy")
 		}
 		rows = append(rows, line)
 	}
 
 	if currentRec != "" {
 		rows = append(rows, "")
-		rows = append(rows, lipgloss.NewStyle().Foreground(GoldColor).Bold(true).Render("WispyDocs Insight:"))
+		rows = append(rows, lipgloss.NewStyle().Foreground(GoldColor).Bold(true).Render("Recommendation & Source:"))
 		rows = append(rows, lipgloss.NewStyle().Foreground(lipgloss.Color("#E0E0E0")).Render(currentRec))
 	}
 

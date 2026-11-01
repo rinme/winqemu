@@ -10,11 +10,21 @@ import (
 
 	"winqemu/internal/gui"
 	"winqemu/internal/tui"
+	"winqemu/pkg/msdl"
 )
 
 const version = "1.0.0"
 
 func main() {
+	// 1. Check for `winqemu msdl ...` subcommand or `--msdl` flag
+	if len(os.Args) > 1 && (os.Args[1] == "msdl" || os.Args[1] == "--msdl") {
+		if err := msdl.RunCLI(os.Args[2:]); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+		return
+	}
+
 	guiFlag := flag.Bool("gui", false, "Force GUI mode (desktop window)")
 	tuiFlag := flag.Bool("tui", false, "Force TUI mode (terminal wizard)")
 	verFlag := flag.Bool("version", false, "Print version information and exit")
@@ -22,10 +32,17 @@ func main() {
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "WinQEMU ⚡ Next-Gen Windows VM Creator on QEMU / virt-manager\n\n")
-		fmt.Fprintf(os.Stderr, "Usage: winqemu [options]\n\n")
+		fmt.Fprintf(os.Stderr, "Usage: winqemu [options] [command]\n\n")
+		fmt.Fprintf(os.Stderr, "Commands:\n")
+		fmt.Fprintf(os.Stderr, "  msdl [flags]   Direct Microsoft ISO downloader CLI (msdl.tech-latest.com)\n")
+		fmt.Fprintf(os.Stderr, "                 Examples:\n")
+		fmt.Fprintf(os.Stderr, "                   winqemu msdl --list\n")
+		fmt.Fprintf(os.Stderr, "                   winqemu msdl --id 3813 --lang \"English\"\n")
+		fmt.Fprintf(os.Stderr, "                   winqemu msdl --eval win11-ent\n")
+		fmt.Fprintf(os.Stderr, "                   winqemu msdl --eval server-2025\n\n")
 		fmt.Fprintf(os.Stderr, "Options:\n")
-		fmt.Fprintf(os.Stderr, "  --gui       Launch desktop graphical interface (Native Webview)\n")
-		fmt.Fprintf(os.Stderr, "  --tui       Launch terminal user interface (Bubble Tea)\n")
+		fmt.Fprintf(os.Stderr, "  --gui          Launch desktop graphical interface (Native Webview)\n")
+		fmt.Fprintf(os.Stderr, "  --tui          Launch terminal user interface (Bubble Tea)\n")
 		fmt.Fprintf(os.Stderr, "  -v, --version  Print version information and exit\n")
 		fmt.Fprintf(os.Stderr, "  -h, --help     Show this help message\n\n")
 		fmt.Fprintf(os.Stderr, "By default, WinQEMU auto-detects if you are in a graphical desktop environment\n")

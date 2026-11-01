@@ -163,9 +163,15 @@ function renderEditions(editions) {
     card.className = `edition-card ${idx === 0 ? "selected" : ""}`;
     if (idx === 0) selectEdition(ed);
 
-    let wispyBadge = "";
-    if (ed.is_recommended) {
-      wispyBadge = `<span class="badge badge-wispy">⭐ Recommended by WispyDocs</span>`;
+    let badges = [];
+    if (ed.badge === "LATEST") {
+      badges.push(`<span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35);">⚡ LATEST 26H2</span>`);
+    }
+    if (ed.msdl_product_id || ed.msdl_eval_slug) {
+      badges.push(`<span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25);">MSDL Official CDN</span>`);
+    }
+    if (ed.badge === "WISPY" || (ed.is_recommended && ed.badge !== "LATEST")) {
+      badges.push(`<span class="badge badge-wispy">⭐ Recommended by WispyDocs</span>`);
     }
 
     card.innerHTML = `
@@ -173,7 +179,7 @@ function renderEditions(editions) {
         <div class="edition-title">
           <span>${ed.name}</span>
           <span class="badge badge-secondary" style="background: rgba(255,255,255,0.06); font-family: var(--font-mono);">${ed.arch}</span>
-          ${wispyBadge}
+          ${badges.join(" ")}
         </div>
         <div style="font-size: 11.5px; color: var(--text-dim); font-family: var(--font-mono);">${ed.version} • ${ed.release}</div>
       </div>
@@ -233,16 +239,17 @@ window.toggleLocalISO = function() {
 };
 
 // Callback from Go backend
-window.onDownloadProgress = function(percent, speedStr, done, err, downloadedGB, totalGB) {
+window.onDownloadProgress = function(percent, speedStr, done, err, downloadedGB, totalGB, provider) {
   const bar = document.getElementById("download-progress-bar");
   const status = document.getElementById("download-status");
   const speed = document.getElementById("download-speed");
 
   bar.style.width = `${percent}%`;
+  const provText = provider === "msdl-microsoft-cdn" ? " [⚡ Microsoft CDN]" : "";
   if (downloadedGB !== undefined && totalGB !== undefined && totalGB > 0) {
-    status.innerText = `Downloading installation media... ${percent.toFixed(1)}% (${downloadedGB.toFixed(2)} / ${totalGB.toFixed(2)} GB)`;
+    status.innerText = `Downloading installation media${provText}... ${percent.toFixed(1)}% (${downloadedGB.toFixed(2)} / ${totalGB.toFixed(2)} GB)`;
   } else {
-    status.innerText = `Downloading installation media... ${percent.toFixed(1)}%`;
+    status.innerText = `Downloading installation media${provText}... ${percent.toFixed(1)}%`;
   }
   speed.innerText = speedStr;
 

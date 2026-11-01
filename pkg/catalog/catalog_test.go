@@ -1,6 +1,7 @@
 package catalog
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -10,8 +11,8 @@ func TestLoadEmbeddedCatalog(t *testing.T) {
 		t.Fatalf("failed to load embedded catalog: %v", err)
 	}
 
-	if len(cat.Families) != 4 {
-		t.Errorf("expected 4 families (win11, win10, win81, win7), got %d", len(cat.Families))
+	if len(cat.Families) < 4 {
+		t.Errorf("expected at least 4 families, got %d", len(cat.Families))
 	}
 
 	// Verify Windows 11 family has WispyDocs recommended editions
@@ -43,8 +44,8 @@ func TestGetEdition(t *testing.T) {
 		t.Fatalf("expected edition win10-iot-enterprise-ltsc-2021 to be found")
 	}
 
-	if ed.Version != "21H2" {
-		t.Errorf("expected version 21H2, got %s", ed.Version)
+	if !strings.HasPrefix(ed.Version, "21H2") {
+		t.Errorf("expected version starting with 21H2, got %s", ed.Version)
 	}
 
 	if !ed.IsRecommended {

@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 
 	"winqemu/pkg/downloader"
+	"winqemu/pkg/msdl"
 )
 
 func (m *AppModel) updateISOSource(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -115,7 +116,11 @@ func (m *AppModel) viewISOSource() string {
 	}
 
 	rows = append(rows, "")
-	rows = append(rows, fmt.Sprintf("Source Link: %s", m.SelectedEdition.DownloadURL))
+	if m.SelectedEdition.MSDLProductID != "" || m.SelectedEdition.MSDLEvalSlug != "" {
+		rows = append(rows, "CDN Source:  ⚡ Official Microsoft CDN via MSDL (msdl.tech-latest.com)")
+	} else {
+		rows = append(rows, fmt.Sprintf("Source Link: %s", m.SelectedEdition.DownloadURL))
+	}
 	rows = append(rows, fmt.Sprintf("File Size:   ~%.2f GB", float64(m.SelectedEdition.SizeBytes)/(1024*1024*1024)))
 
 	card := InfoCard.Render(strings.Join(rows, "\n"))
@@ -145,11 +150,12 @@ func (m *AppModel) startDownloadCmd() tea.Cmd {
 			return DownloadDoneMsg{Err: nil}
 		}
 
-		if m.SelectedEdition.DownloadURL == "" {
-			return DownloadDoneMsg{Err: fmt.Errorf("no direct download link configured for edition: %s", m.SelectedEdition.Name)}
+		activeURL, _ := msdl.ResolveLiveDownloadURL(ctx, m.SelectedEdition)
+		if activeURL == "" {
+			return DownloadDoneMsg{Err: fmt.Errorf("no download link configured or resolved for edition: %s", m.SelectedEdition.Name)}
 		}
 
-		err := dl.Download(ctx, m.SelectedEdition.DownloadURL, destFile, "", func(p downloader.Progress) {
+		err := dl.Download(ctx, activeURL, destFile, "", func(p downloader.Progress) {
 			if m.program != nil {
 				m.program.Send(DownloadMsg(p))
 			}
