@@ -1,0 +1,228 @@
+{
+  "last_update": "2026-11-01",
+  "families": [
+    {
+      "id": "win11",
+      "display_name": "Windows 11 (24H2 / LTSC)",
+      "description": "Latest generation of Windows with modern scheduler, DirectX 12 Agility, and TPM 2.0.",
+      "editions": [
+        {
+          "id": "win11-iot-enterprise-ltsc-2024",
+          "name": "Windows 11 IoT Enterprise LTSC 2024",
+          "version": "24H2",
+          "release": "2024",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win11-iot-enterprise-ltsc-2024-en-us-x64",
+          "sha256": "4b76c8c459c5d1e4e5e7bbd743a60d96d91f2495b6a7a0b73c4d7e974e64f8c1",
+          "size_bytes": 5242880000,
+          "is_recommended": true,
+          "recommendation": "WispyDocs Top Pick: Zero bloatware, no AI telemetry overhead, 10-year support lifecycle, optimal for gaming & virtualization.",
+          "product_key": "KBN8V-HFGQ4-RRX47-PRTH7-36CJ3",
+          "is_win11": true
+        },
+        {
+          "id": "win11-enterprise-ltsc-2024",
+          "name": "Windows 11 Enterprise LTSC 2024",
+          "version": "24H2",
+          "release": "2024",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win11-enterprise-ltsc-2024-en-us-x64",
+          "sha256": "7c126d4be0c6a51272719a716c026e6ef1c469f6e1f0e42825d10d65b7501a34",
+          "size_bytes": 5120000000,
+          "is_recommended": true,
+          "recommendation": "WispyDocs Recommended: Clean stable release with 5-year support lifecycle.",
+          "product_key": "M7XTQ-FN8P6-BKYTX-P6TFT-FT224",
+          "is_win11": true
+        },
+        {
+          "id": "win11-pro-24h2",
+          "name": "Windows 11 Pro 24H2",
+          "version": "24H2",
+          "release": "2024",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win11-24h2-pro-en-us-x64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 5767168000,
+          "is_recommended": true,
+          "recommendation": "WispyDocs Recommended: Complete standard feature set with full Hyper-V and Sandbox capability.",
+          "product_key": "W269N-WFGWX-YVC9B-4J6C9-T83GX",
+          "is_win11": true
+        },
+        {
+          "id": "win11-home-24h2",
+          "name": "Windows 11 Home 24H2",
+          "version": "24H2",
+          "release": "2024",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win11-24h2-home-en-us-x64",
+          "sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+          "size_bytes": 5767168000,
+          "is_recommended": false,
+          "recommendation": "Consumer baseline edition. Note: Microsoft Account required by default during setup (bypassed with autounattend.xml).",
+          "product_key": "TX9XD-98N7V-6WMQ6-BX7FG-H8Q99",
+          "is_win11": true
+        },
+        {
+          "id": "win11-pro-workstations-24h2",
+          "name": "Windows 11 Pro for Workstations 24H2",
+          "version": "24H2",
+          "release": "2024",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win11-24h2-pro-workstations-en-us-x64",
+          "sha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
+          "size_bytes": 5767168000,
+          "is_recommended": false,
+          "recommendation": "Targeted for multi-CPU servers and ReFS storage volumes.",
+          "product_key": "NRG8B-VKK3Q-CXVCJ-9G2XF-6Q84J",
+          "is_win11": true
+        }
+      ]
+    },
+    {
+      "id": "win10",
+      "display_name": "Windows 10 (22H2 / LTSC)",
+      "description": "Mature, highly compatible edition with low overhead and reliable drivers.",
+      "editions": [
+        {
+          "id": "win10-iot-enterprise-ltsc-2021",
+          "name": "Windows 10 IoT Enterprise LTSC 2021",
+          "version": "21H2",
+          "release": "2021",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win10-iot-enterprise-ltsc-2021-en-us-x64",
+          "sha256": "8119056d36e2f170425785a5323be0b82f80eb3c48325a7700de0c9466e3faec",
+          "size_bytes": 4949278720,
+          "is_recommended": true,
+          "recommendation": "WispyDocs Top Pick: Supported until 2032! Exceptionally lean, ultra-low DPC latency.",
+          "product_key": "QPM6N-7J2WJ-P88HH-P3YRH-YY74H",
+          "is_win11": false
+        },
+        {
+          "id": "win10-enterprise-ltsc-2021",
+          "name": "Windows 10 Enterprise LTSC 2021",
+          "version": "21H2",
+          "release": "2021",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win10-enterprise-ltsc-2021-en-us-x64",
+          "sha256": "fb6291a27e77a16e78ab8f62f37a5a8feab9cbb4510061e8605c4ea807494a37",
+          "size_bytes": 4823449600,
+          "is_recommended": true,
+          "recommendation": "Standard LTSC release with 5-year support cycle and zero consumer bloat.",
+          "product_key": "M7XTQ-FN8P6-BKYTX-P6TFT-FT224",
+          "is_win11": false
+        },
+        {
+          "id": "win10-pro-22h2",
+          "name": "Windows 10 Pro 22H2",
+          "version": "22H2",
+          "release": "2022",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win10-22h2-pro-en-us-x64",
+          "sha256": "a358c5457a480e61d2d38ee5d0a9b8f2d57367a7f45c22f03f739678e715ebfb",
+          "size_bytes": 5054136320,
+          "is_recommended": false,
+          "recommendation": "Standard general release for Windows 10.",
+          "product_key": "W269N-WFGWX-YVC9B-4J6C9-T83GX",
+          "is_win11": false
+        },
+        {
+          "id": "win10-home-22h2",
+          "name": "Windows 10 Home 22H2",
+          "version": "22H2",
+          "release": "2022",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win10-22h2-home-en-us-x64",
+          "sha256": "ef2d127de37b942baad0684f88eec6bf1303bc3be3b34241ac2a893c5c93cb21",
+          "size_bytes": 5054136320,
+          "is_recommended": false,
+          "recommendation": "Home consumer edition.",
+          "product_key": "TX9XD-98N7V-6WMQ6-BX7FG-H8Q99",
+          "is_win11": false
+        }
+      ]
+    },
+    {
+      "id": "win81",
+      "display_name": "Windows 8.1 (Update 3)",
+      "description": "Legacy lightweight OS suitable for retro gaming and low memory virtualization.",
+      "editions": [
+        {
+          "id": "win81-pro-update3",
+          "name": "Windows 8.1 Pro (with Update 3)",
+          "version": "8.1",
+          "release": "2014",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win81-pro-en-us-x64",
+          "sha256": "1624c96de7eb137e28c4e61f2249c5e3f538350697ad98717808269d7c07b66c",
+          "size_bytes": 4351590400,
+          "is_recommended": false,
+          "recommendation": "Very low memory footprint; ideal for testing legacy software.",
+          "product_key": "GCRJD-8NW9H-F2CDX-CCM8D-9D6T9",
+          "is_win11": false
+        },
+        {
+          "id": "win81-enterprise",
+          "name": "Windows 8.1 Enterprise",
+          "version": "8.1",
+          "release": "2014",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win81-enterprise-en-us-x64",
+          "sha256": "c869501d51c4a169b1875151528646b1d44118ae26cbbecaaefb8d0092c63ef2",
+          "size_bytes": 4183818240,
+          "is_recommended": false,
+          "recommendation": "Legacy enterprise build with DirectAccess and Windows To Go.",
+          "product_key": "MHF9N-XY6XB-WVXMC-BTDCT-MKKG7",
+          "is_win11": false
+        }
+      ]
+    },
+    {
+      "id": "win7",
+      "display_name": "Windows 7 (SP1)",
+      "description": "Classic OS for retro testing and legacy workloads without modern telemetry.",
+      "editions": [
+        {
+          "id": "win7-ultimate-sp1",
+          "name": "Windows 7 Ultimate SP1",
+          "version": "7 SP1",
+          "release": "2011",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win7-ultimate-sp1-en-us-x64",
+          "sha256": "6c90583e23f30ca560412e20ecd3335499dec629abf6807ce1859e0ed14b5e18",
+          "size_bytes": 3319080960,
+          "is_recommended": false,
+          "recommendation": "Full classic Windows 7 experience with Aero Glass support.",
+          "product_key": "RHTBY-VWY6D-QJRJ9-JGQ3X-Q2289",
+          "is_win11": false
+        },
+        {
+          "id": "win7-pro-sp1",
+          "name": "Windows 7 Professional SP1",
+          "version": "7 SP1",
+          "release": "2011",
+          "arch": "x64",
+          "lang": "en-us",
+          "download_url": "https://massgrave.dev/genuine-installation-media?iso=win7-pro-sp1-en-us-x64",
+          "sha256": "0bcfc540190a5937415a770a8d438c82662fa9cf4a42ba8fcf3c50989f667104",
+          "size_bytes": 3319080960,
+          "is_recommended": false,
+          "recommendation": "Standard professional legacy edition.",
+          "product_key": "FJ82H-XT6CR-J8D7P-XQJJ2-GPDD4",
+          "is_win11": false
+        }
+      ]
+    }
+  ]
+}
