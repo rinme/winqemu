@@ -34,7 +34,21 @@ func GetInstallCommand(info *HostInfo) string {
 	}
 }
 
-// RunInstallCommand executes the installation command interactively using a shell.
+// GetInstallExecCmd returns an *exec.Cmd configured for interactive execution with a pause at the end.
+func GetInstallExecCmd(info *HostInfo) *exec.Cmd {
+	baseCmd := GetInstallCommand(info)
+
+	if info.OS == OSWindows {
+		script := fmt.Sprintf(`Write-Host "==> WinQEMU Package Installer" -ForegroundColor Cyan; %s; Read-Host "Press [Enter] to return to WinQEMU..."`, baseCmd)
+		return exec.Command("powershell", "-NoProfile", "-Command", script)
+	}
+
+	// Linux / macOS: Run bash with header, execution, and confirmation prompt before screen clear
+	script := fmt.Sprintf(`echo -e "\n\033[1;35m==> WinQEMU Package Installer\033[0m\n"; %s; rc=$?; if [ $rc -eq 0 ]; then echo -e "\n\033[1;32m==> Installation completed successfully! Press [Enter] to return to WinQEMU...\033[0m"; else echo -e "\n\033[1;31m==> Installation exited with code $rc. Press [Enter] to return to WinQEMU...\033[0m"; fi; read -r; exit $rc`, baseCmd)
+	return exec.Command("bash", "-c", script)
+}
+
+// RunInstallCommand executes the installation command non-interactively (used in headless / script environments).
 func RunInstallCommand(info *HostInfo) error {
 	cmdStr := GetInstallCommand(info)
 	var cmd *exec.Cmd

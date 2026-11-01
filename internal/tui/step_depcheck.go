@@ -22,16 +22,13 @@ func (m *AppModel) updateDepCheck(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.Step = StepWelcome
 			return m, nil
 		case "i", "I":
-			// Trigger package installation
-			m.StatusMsg = "Executing package installation..."
-			err := sysinfo.RunInstallCommand(m.Host)
-			if err != nil {
-				m.Err = err
-			} else {
-				m.StatusMsg = "Installation successful! Re-checking dependencies..."
-				m.Host = sysinfo.DetectHost()
-			}
-			return m, nil
+			// Trigger interactive package installation via terminal passthrough
+			m.StatusMsg = "Opening interactive terminal for package installation..."
+			m.Err = nil
+			execCmd := sysinfo.GetInstallExecCmd(m.Host)
+			return m, tea.ExecProcess(execCmd, func(err error) tea.Msg {
+				return InstallFinishedMsg{Err: err}
+			})
 		case "q", "esc":
 			return m, tea.Quit
 		}
@@ -77,10 +74,15 @@ func (m *AppModel) viewDepCheck() string {
 		prompt = HelpStyle.Render("Press [Enter] to choose Windows Edition • [b] back • [q] quit")
 	}
 
+	var statusMsg string
+	if m.StatusMsg != "" {
+		statusMsg = SuccessStyle.Render(fmt.Sprintf("\n%s\n", m.StatusMsg))
+	}
+
 	var errMsg string
 	if m.Err != nil {
 		errMsg = ErrorStyle.Render(fmt.Sprintf("\nError: %v\n", m.Err))
 	}
 
-	return lipgloss.JoinVertical(lipgloss.Left, card, errMsg, prompt)
+	return lipgloss.JoinVertical(lipgloss.Left, card, statusMsg, errMsg, prompt)
 }

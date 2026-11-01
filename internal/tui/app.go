@@ -40,6 +40,9 @@ type VMCreateDoneMsg struct {
 	Result *vm.CreationResult
 	Err    error
 }
+type InstallFinishedMsg struct {
+	Err error
+}
 
 // AppModel is the primary state machine for the Charm Bubble Tea application.
 type AppModel struct {
@@ -197,6 +200,18 @@ func (m *AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else {
 			m.Result = msg.Result
 			m.Step = StepDone
+		}
+		return m, nil
+
+	case InstallFinishedMsg:
+		m.IsLoading = false
+		m.Host = sysinfo.DetectHost() // Re-check all dependencies
+		if msg.Err != nil {
+			m.Err = fmt.Errorf("package manager exited with error: %w", msg.Err)
+			m.StatusMsg = ""
+		} else {
+			m.Err = nil
+			m.StatusMsg = "✔ Package installation completed! System dependencies re-checked."
 		}
 		return m, nil
 	}

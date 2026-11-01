@@ -81,5 +81,10 @@ func TestGetInstallCommand(t *testing.T) {
 		if !strings.Contains(cmd, tt.cmdSub) {
 			t.Errorf("expected install command for %s to contain %s, got: %s", tt.distro, tt.cmdSub, cmd)
 		}
+
+		execCmd := GetInstallExecCmd(info)
+		if execCmd == nil {
+			t.Errorf("expected non-nil execCmd for %s", tt.distro)
+		}
 	}
 }
