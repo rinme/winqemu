@@ -24,7 +24,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "WinQEMU ⚡ Next-Gen Windows VM Creator on QEMU / virt-manager\n\n")
 		fmt.Fprintf(os.Stderr, "Usage: winqemu [options]\n\n")
 		fmt.Fprintf(os.Stderr, "Options:\n")
-		fmt.Fprintf(os.Stderr, "  --gui       Launch desktop graphical interface (Go-Gui)\n")
+		fmt.Fprintf(os.Stderr, "  --gui       Launch desktop graphical interface (Native Webview)\n")
 		fmt.Fprintf(os.Stderr, "  --tui       Launch terminal user interface (Bubble Tea)\n")
 		fmt.Fprintf(os.Stderr, "  -v, --version  Print version information and exit\n")
 		fmt.Fprintf(os.Stderr, "  -h, --help     Show this help message\n\n")

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WinQEMU ⚡ Virtual Machine Studio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-title">WinQEMU</div>
+          <div class="brand-sub">VM Studio</div>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <div class="nav-item active" data-tab="overview">
+          <span class="nav-icon">📊</span>
+          <span>System Overview</span>
+        </div>
+        <div class="nav-item" data-tab="os">
+          <span class="nav-icon">💿</span>
+          <span>OS & Editions</span>
+        </div>
+        <div class="nav-item" data-tab="media">
+          <span class="nav-icon">📥</span>
+          <span>Installation Media</span>
+        </div>
+        <div class="nav-item" data-tab="hardware">
+          <span class="nav-icon">⚙️</span>
+          <span>Hardware Config</span>
+        </div>
+        <div class="nav-item" data-tab="tuning">
+          <span class="nav-icon">⚡</span>
+          <span>Performance Tuning</span>
+        </div>
+        <div class="nav-item" data-tab="deploy">
+          <span class="nav-icon">🚀</span>
+          <span>Deploy & Launch</span>
+        </div>
+        <div class="nav-item" data-tab="vms">
+          <span class="nav-icon">🗄️</span>
+          <span>VM Manager</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          <span id="host-badge">Detecting host...</span>
+        </div>
+        <div class="status-badge" style="font-size: 11px; color: var(--cyan);" id="accel-badge">
+          Acceleration: Active
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-bar">
+        <div>
+          <div class="page-title" id="page-title">System Overview</div>
+          <div class="page-subtitle" id="page-subtitle">Host telemetry and virtualization dependencies</div>
+        </div>
+        <div>
+          <span class="badge badge-success" id="kvm-badge">KVM / HVF Ready</span>
+        </div>
+      </header>
+
+      <!-- 1. System Overview -->
+      <section class="tab-pane active" id="pane-overview">
+        <div class="grid-stats">
+          <div class="stat-box">
+            <div class="stat-label">Host Distribution</div>
+            <div class="stat-value" id="stat-distro">Arch Linux</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Total Host RAM</div>
+            <div class="stat-value" id="stat-ram">16 GB</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Logical CPUs</div>
+            <div class="stat-value" id="stat-cpus">8 Cores</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Hardware Acceleration</div>
+            <div class="stat-value" id="stat-accel" style="color: var(--emerald);">KVM Enabled</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span>Virtualization Tools & Services Status</span>
+            <button class="btn btn-primary" id="btn-install-deps" onclick="window.installDependencies()">
+              📦 Interactive Terminal Installer
+            </button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Description</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="deps-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 2. OS & Editions -->
+      <section class="tab-pane" id="pane-os">
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;" id="family-tabs">
+          <!-- Family Switcher Buttons -->
+        </div>
+        <div class="editions-grid" id="editions-list">
+          <!-- Dynamically populated edition cards -->
+        </div>
+      </section>
+
+      <!-- 3. Installation Media -->
+      <section class="tab-pane" id="pane-media">
+        <div class="card">
+          <div class="card-title">
+            <span>Genuine Windows Installation Media</span>
+            <span class="badge badge-wispy" id="media-wispy-badge">WispyDocs Verified</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 16px;" id="media-edition-name">
+            Selected: Windows 11 IoT Enterprise LTSC 2024
+          </p>
+
+          <div id="download-box" style="margin-bottom: 20px;">
+            <button class="btn btn-primary" id="btn-start-download" onclick="window.triggerDownload()">
+              📥 Download Genuine ISO from Microsoft CDN
+            </button>
+            <div id="progress-wrapper" style="display: none; margin-top: 16px;">
+              <div style="display: flex; justify-content: space-between; font-size: 12.5px;">
+                <span id="download-status">Downloading...</span>
+                <span id="download-speed" style="color: var(--cyan); font-weight: 600;">0.0 MB/s</span>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar" id="download-progress-bar"></div>
+              </div>
+            </div>
+            <div id="cached-notice" style="display: none; color: var(--emerald); font-weight: 600; margin-top: 10px;">
+              ✔ Genuine ISO is already cached on disk!
+            </div>
+          </div>
+
+          <div class="switch-row" style="border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+            <div>
+              <div class="switch-label">Use Local Existing ISO</div>
+              <div class="switch-sub">Specify an existing Windows ISO image already on your drive</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="check-use-local-iso" onchange="window.toggleLocalISO()">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div id="local-iso-container" style="display: none; margin-top: 14px;">
+            <label class="form-label">Local ISO File Path:</label>
+            <input type="text" class="form-input" id="input-local-iso-path" placeholder="/home/user/Downloads/win11.iso">
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Hardware Config -->
+      <section class="tab-pane" id="pane-hardware">
+        <div class="card">
+          <div class="card-title">Hardware Resource Allocation</div>
+          
+          <div class="form-group">
+            <label class="form-label">Virtual Machine Name:</label>
+            <input type="text" class="form-input" id="input-vm-name" value="Windows-11-VM">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" id="label-ram">RAM Memory (MB) [Auto: 50% Host RAM]:</label>
+            <input type="number" class="form-input" id="input-ram" value="8192">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" id="label-cpu">vCPU Cores [Host SMT Matched]:</label>
+            <input type="number" class="form-input" id="input-cpu" value="4">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Virtual Disk Size (GB) [Sparse qcow2]:</label>
+            <input type="number" class="form-input" id="input-disk" value="64">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">VM Storage Directory:</label>
+            <input type="text" class="form-input" id="input-storage-dir" value="">
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Performance Tuning -->
+      <section class="tab-pane" id="pane-tuning">
+        <div class="card">
+          <div class="card-title">
+            <span>Optimization Profiles</span>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-primary" id="btn-profile-gaming" onclick="window.setProfile('gaming')">⚡ Gaming / Low-Latency</button>
+              <button class="btn btn-secondary" id="btn-profile-balanced" onclick="window.setProfile('balanced')">⚖️ Balanced</button>
+            </div>
+          </div>
+
+          <div class="switch-row">
+            <div>
+              <div class="switch-label">Bypass Windows 11 TPM 2.0 & Secure Boot Checks</div>
+              <div class="switch-sub">Applies LabConfig registry bypasses and sets up offline account during setup</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="tune-bypass" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
+            <div>
+              <div class="switch-label">Looking Glass IVSHMEM Support</div>
+              <div class="switch-sub">Creates /dev/shm/looking-glass 64MB shared memory device for 144Hz+ low latency streaming</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="tune-looking-glass" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
+            <div>
+              <div class="switch-label">VirtIO SCSI & 10G VirtIO Network Drivers</div>
+              <div class="switch-sub">Injects Red Hat VirtIO high performance storage and network drivers</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="tune-virtio" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="switch-row">
+            <div>
+              <div class="switch-label">Auto-Run Microsoft Activation Scripts (MAS)</div>
+              <div class="switch-sub">Runs genuine KMS/HWID activation on first user logon</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="tune-mas" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="switch-row" style="border: none;">
+            <div>
+              <div class="switch-label">Audio Backend</div>
+              <div class="switch-sub">Low latency Scream network audio for gaming or standard Intel AC97/HDA</div>
+            </div>
+            <select class="form-input" id="tune-audio" style="width: 180px;">
+              <option value="scream">Scream (Low Latency)</option>
+              <option value="ich9">Intel ICH9</option>
+              <option value="hda">Intel HDA</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Deploy & Launch -->
+      <section class="tab-pane" id="pane-deploy">
+        <div class="card">
+          <div class="card-title">Virtual Machine Deployment Studio</div>
+          <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 20px;">
+            Deploys your virtual machine with unattended installation answer files, VirtIO driver disks, Hyper-V enlightenments, and Libvirt domain definitions.
+          </p>
+
+          <button class="btn btn-success" id="btn-deploy" style="font-size: 15px; padding: 12px 28px;" onclick="window.triggerDeploy()">
+            🚀 Create & Register Virtual Machine
+          </button>
+
+          <div id="deploy-progress" style="display: none; margin-top: 24px;">
+            <div style="font-size: 14px; font-weight: 600; color: var(--cyan); margin-bottom: 12px;" id="deploy-status-text">
+              Building VM artifacts...
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar" id="deploy-progress-bar" style="width: 25%;"></div>
+            </div>
+          </div>
+
+          <div id="deploy-success-box" style="display: none; margin-top: 24px; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 20px;">
+            <div style="font-size: 16px; font-weight: 700; color: var(--emerald); margin-bottom: 8px;">
+              🎉 Virtual Machine Ready!
+            </div>
+            <p style="font-size: 13px; color: var(--text-main); margin-bottom: 16px;" id="deploy-details">
+              Registered in Libvirt and visible in virt-manager.
+            </p>
+            <button class="btn btn-primary" onclick="window.triggerLaunchCreated()">
+              ▶ Launch in virt-manager / QEMU Now
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. VM Manager -->
+      <section class="tab-pane" id="pane-vms">
+        <div class="card">
+          <div class="card-title">
+            <span>Discovered WinQEMU Virtual Machines</span>
+            <button class="btn btn-secondary" onclick="window.refreshExistingVMs()">🔄 Refresh</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>VM Name</th>
+                <th>Disk Size</th>
+                <th>Manager</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="vms-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

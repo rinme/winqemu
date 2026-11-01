@@ -2,14 +2,14 @@
 
 > **Modern cross-platform GUI and TUI for creating high-performance Windows virtual machines on QEMU / KVM / virt-manager with WispyDocs curated genuine ISOs, automated VirtIO driver injection, Windows 11 TPM/OOBE bypass, and Looking Glass support.**
 
-Built with Go, [Go-Gui](https://github.com/go-gui-org/go-gui) (native GPU-rendered desktop interface), Charm [Bubble Tea](https://github.com/charmbracelet/bubbletea), and [Lip Gloss](https://github.com/charmbracelet/lipgloss).
+Built with Go, [Native Webview](https://github.com/webview/webview_go) (GPU-accelerated modern web studio), Charm [Bubble Tea](https://github.com/charmbracelet/bubbletea), and [Lip Gloss](https://github.com/charmbracelet/lipgloss).
 
 ---
 
 ## ✨ Features
 
 - **Dual-Mode Interface (GUI & TUI)**:
-  - **Desktop GUI**: Native immediate-mode GPU-accelerated window (Metal on macOS, OpenGL on Linux/Windows, zero cgo or web runtimes). Auto-detected in desktop sessions or launched with `--gui`.
+  - **Desktop GUI**: Sleek Dark Tech glassmorphic desktop interface with glowing purple/cyan accents, smooth micro-animations, and real-time IPC. Rendered via native platform Webview (WebKitGTK on Linux, WKWebView on macOS, WebView2 on Windows) without Electron bloat. Auto-detected in desktop sessions or launched with `--gui`.
   - **Terminal TUI**: Full-screen stepped wizard built with Charm Bubble Tea & Lip Gloss. Auto-detected in terminal/headless environments or forced with `--tui`.
 - **Cross-Platform Host Detection**:
   - **Linux**: Auto-detects Arch Linux, Debian, Ubuntu, Fedora, openSUSE, Void, and Alpine. Verifies `qemu`, `libvirt`, `virt-manager`, `swtpm`, and `ovmf`. Offers interactive package installation.

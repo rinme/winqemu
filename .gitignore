@@ -1,4 +1,5 @@
 bin/
+.pkgconfig/
 *.iso
 *.qcow2
 *.vfd
