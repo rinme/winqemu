@@ -1,38 +1,46 @@
 # WinQEMU ⚡
 
-> **Modern cross-platform TUI for setting up high-performance Windows virtual machines on QEMU / KVM / virt-manager with WispyDocs curated genuine ISOs, automated VirtIO driver injection, and Windows 11 TPM/OOBE bypass.**
+> **Modern cross-platform GUI and TUI for creating high-performance Windows virtual machines on QEMU / KVM / virt-manager with WispyDocs curated genuine ISOs, automated VirtIO driver injection, Windows 11 TPM/OOBE bypass, and Looking Glass support.**
 
-Built with Go, Charm [Bubble Tea](https://github.com/charmbracelet/bubbletea), and [Lip Gloss](https://github.com/charmbracelet/lipgloss).
+Built with Go, [Go-Gui](https://github.com/go-gui-org/go-gui) (native GPU-rendered desktop interface), Charm [Bubble Tea](https://github.com/charmbracelet/bubbletea), and [Lip Gloss](https://github.com/charmbracelet/lipgloss).
 
 ---
 
 ## ✨ Features
 
+- **Dual-Mode Interface (GUI & TUI)**:
+  - **Desktop GUI**: Native immediate-mode GPU-accelerated window (Metal on macOS, OpenGL on Linux/Windows, zero cgo or web runtimes). Auto-detected in desktop sessions or launched with `--gui`.
+  - **Terminal TUI**: Full-screen stepped wizard built with Charm Bubble Tea & Lip Gloss. Auto-detected in terminal/headless environments or forced with `--tui`.
 - **Cross-Platform Host Detection**:
-  - **Linux**: Auto-detects Arch Linux, Debian, Ubuntu, Fedora, openSUSE, Void, and Alpine. Verifies `qemu`, `libvirt`, `virt-manager`, `swtpm`, and `ovmf`. Offers 1-click automatic dependency installation via native package managers.
+  - **Linux**: Auto-detects Arch Linux, Debian, Ubuntu, Fedora, openSUSE, Void, and Alpine. Verifies `qemu`, `libvirt`, `virt-manager`, `swtpm`, and `ovmf`. Offers interactive package installation.
   - **macOS**: Native Hypervisor Framework (`-accel hvf`) with Homebrew integration.
   - **Windows**: Native Windows Hypervisor Platform (`-accel whpx`) with Winget integration.
 - **Genuine Windows Media & WispyDocs Recommendations**:
   - Embedded verified catalog of Windows 11, 10, 8.1, and 7 direct from [Massgrave Genuine Installation Media](https://massgrave.dev/genuine-installation-media).
-  - Highlights WispyDocs top picks (`⭐ Recommended by WispyDocs`) with detailed architectural notes:
-    - **Windows 11 IoT Enterprise LTSC 2024 (24H2)**: Zero consumer bloat, no AI telemetry overhead, 10-year support lifecycle, optimal for gaming & virtualization.
+  - Highlights WispyDocs top picks (`⭐ Recommended by WispyDocs`):
+    - **Windows 11 IoT Enterprise LTSC 2024 (24H2)**: Zero consumer bloat, no AI telemetry overhead, 10-year support lifecycle.
     - **Windows 11 Enterprise LTSC 2024 (24H2)** & **Windows 11 Pro 24H2**.
     - **Windows 10 IoT Enterprise LTSC 2021 (21H2)**: Supported until 2032 with ultra-low DPC latency.
-- **In-App Resumable Downloader**:
-  - Built-in multi-gigabyte HTTP download engine supporting `Range` headers, real-time download speed, percentage progress bars, and SHA-256 integrity verification.
-  - Option to supply an existing local ISO.
+- **In-App Resumable Downloader & ISO Cache**:
+  - Resumable multi-gigabyte HTTP engine with live progress bars and SHA-256 verification.
+  - Automatically recognizes cached ISOs (`[Cached - Ready]`) to skip redundant downloads.
+  - Option to supply an existing local ISO file.
 - **Automated Driver & Win11 TPM / OOBE Bypass**:
-  - Generates `autounattend.xml` and formats a pure Go FAT12 floppy driver image (`unattend.vfd`).
-  - Seamlessly injects VirtIO storage/network drivers and applies registry bypasses for **TPM 2.0, Secure Boot, RAM, and CPU checks**, plus offline local account creation (bypassing Microsoft Account login requirement).
+  - Pure Go FAT12 floppy driver image builder (`unattend.vfd`).
+  - Seamlessly injects VirtIO storage/network drivers and applies registry bypasses for **TPM 2.0, Secure Boot, RAM, and CPU checks**, plus offline local account creation.
   - Optional automated first-logon Microsoft Activation Scripts (MAS).
-- **Performance & Tuning Presets**:
+- **Performance Tuning & Looking Glass**:
   - **Maximum Gaming & Low-Latency Profile**:
-    - Full Hyper-V enlightenments: `hv_relaxed`, `hv_vapic`, `hv_spinlocks=0x1fff`, `hv_time`, `hv_synic`, `hv_stimer`, `hv_reset`, `hv_frequencies`, `hv_reenlightenment`.
+    - Full Hyper-V enlightenments (`hv_relaxed`, `hv_vapic`, `hv_spinlocks=0x1fff`, `hv_time`, `hv_synic`, etc.).
     - Host CPU passthrough with exact socket/core/thread topology matching host CCX.
+    - **Looking Glass IVSHMEM Support**: Shared memory device (`/dev/shm/looking-glass`) for ultra-low latency, high-refresh display streaming.
     - VirtIO SCSI controller with high-throughput native async I/O.
-    - Low-latency Scream / ICH9 audio backend.
+    - Choice of audio backends: **Scream** (network low-latency gaming audio), **ICH9**, or **Intel HDA**.
   - **Balanced Profile**: Standard virtualization with memory ballooning.
-- **Libvirt & Virt-Manager First**:
+- **VM Manager & Custom Storage**:
+  - Built-in VM Manager to scan, list, and directly launch previously created WinQEMU virtual machines.
+  - Customizable storage directory to locate virtual machines on fast secondary NVMe drives.
+- **Libvirt & Virt-Manager Integration**:
   - On Linux, automatically writes a Libvirt Domain XML definition and registers it via `virsh define`, making the VM instantly manageable in `virt-manager`.
   - Also outputs standalone, portable `start-vm.sh` / `start-vm.bat` scripts.
 
@@ -52,8 +60,12 @@ cd winqemu
 # Build the executable
 make build
 
-# Launch the interactive TUI
+# Launch (auto-detects GUI in desktop environments, TUI in terminal)
 ./bin/winqemu
+
+# Or force a specific mode:
+./bin/winqemu --gui    # Launch native desktop GUI
+./bin/winqemu --tui    # Launch terminal wizard
 ```
 
 ---
