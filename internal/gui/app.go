@@ -127,22 +127,40 @@ func RunGUI() error {
 				return
 			}
 
+			if ed.DownloadURL == "" {
+				w.Dispatch(func() {
+					w.Eval("window.onDownloadProgress(0, '0 MB/s', false, 'No direct download URL configured')")
+				})
+				return
+			}
+
 			home, _ := os.UserHomeDir()
 			cacheDir := filepath.Join(home, ".cache", "winqemu", "iso")
 			_ = os.MkdirAll(cacheDir, 0755)
 			dest := filepath.Join(cacheDir, fmt.Sprintf("%s-%s.iso", ed.ID, ed.Architecture))
 
+			// Check if already cached genuinely (> 100MB)
+			if cached, _, _ := downloader.IsISOCached(ed.ID, ed.Architecture, cacheDir); cached {
+				w.Dispatch(func() {
+					w.Eval("window.onDownloadProgress(100.0, 'Cached', true, '')")
+				})
+				return
+			}
+
 			dl := downloader.NewDownloader()
+			dl.MinBytes = 100 * 1024 * 1024
 			err := dl.Download(context.Background(), ed.DownloadURL, dest, "", func(p downloader.Progress) {
 				w.Dispatch(func() {
-					w.Eval(fmt.Sprintf("window.onDownloadProgress(%.1f, '%.1f MB/s', false, '')",
-						p.Percent, p.SpeedBytesSec/(1024*1024)))
+					w.Eval(fmt.Sprintf("window.onDownloadProgress(%.1f, '%.1f MB/s', false, '', %.2f, %.2f)",
+						p.Percent, p.SpeedBytesSec/(1024*1024),
+						float64(p.BytesDownloaded)/(1024*1024*1024),
+						float64(p.TotalBytes)/(1024*1024*1024)))
 				})
 			})
 
 			w.Dispatch(func() {
 				if err != nil {
-					w.Eval(fmt.Sprintf("window.onDownloadProgress(0, '0 MB/s', true, '%s')", err.Error()))
+					w.Eval(fmt.Sprintf("window.onDownloadProgress(0, '0 MB/s', false, %q)", err.Error()))
 				} else {
 					w.Eval("window.onDownloadProgress(100.0, 'Done', true, '')")
 				}

@@ -137,14 +137,22 @@ func (m *AppModel) startDownloadCmd() tea.Cmd {
 		m.DownloadedISO = destFile
 
 		dl := downloader.NewDownloader()
+		dl.MinBytes = 100 * 1024 * 1024
 
-		// If already downloaded and exists, verify and skip
-		if fi, err := os.Stat(destFile); err == nil && fi.Size() > 100*1024*1024 {
+		// If already genuinely downloaded (>100MB), skip
+		if cached, path, _ := downloader.IsISOCached(m.SelectedEdition.ID, m.SelectedEdition.Architecture, cacheDir); cached {
+			m.DownloadedISO = path
 			return DownloadDoneMsg{Err: nil}
 		}
 
+		if m.SelectedEdition.DownloadURL == "" {
+			return DownloadDoneMsg{Err: fmt.Errorf("no direct download link configured for edition: %s", m.SelectedEdition.Name)}
+		}
+
 		err := dl.Download(ctx, m.SelectedEdition.DownloadURL, destFile, "", func(p downloader.Progress) {
-			// Note: Bubble Tea programs receive progress updates via command messages
+			if m.program != nil {
+				m.program.Send(DownloadMsg(p))
+			}
 		})
 
 		if err != nil {

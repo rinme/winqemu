@@ -85,6 +85,14 @@ type AppModel struct {
 
 	// Cancel context for downloads
 	cancelDownload context.CancelFunc
+
+	// Reference to Bubble Tea program loop for streaming async messages
+	program *tea.Program
+}
+
+// SetProgram attaches the active tea.Program so background goroutines can send progress messages.
+func (m *AppModel) SetProgram(p *tea.Program) {
+	m.program = p
 }
 
 // NewAppModel initializes the TUI with host diagnostics, catalog, and reasonable defaults.
@@ -192,7 +200,19 @@ func (m *AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case DownloadMsg:
 		cmd := m.ProgressBar.SetPercent(msg.Percent / 100.0)
-		m.StatusMsg = fmt.Sprintf("Downloading... %.1f%% (%.1f MB/s)", msg.Percent, msg.SpeedBytesSec/(1024*1024))
+		if msg.TotalBytes > 0 {
+			m.StatusMsg = fmt.Sprintf("Downloading... %.1f%% (%.2f / %.2f GB) • Speed: %.1f MB/s",
+				msg.Percent,
+				float64(msg.BytesDownloaded)/(1024*1024*1024),
+				float64(msg.TotalBytes)/(1024*1024*1024),
+				msg.SpeedBytesSec/(1024*1024),
+			)
+		} else {
+			m.StatusMsg = fmt.Sprintf("Downloading... %.2f MB • Speed: %.1f MB/s",
+				float64(msg.BytesDownloaded)/(1024*1024),
+				msg.SpeedBytesSec/(1024*1024),
+			)
+		}
 		return m, cmd
 
 	case DownloadDoneMsg:

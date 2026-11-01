@@ -87,6 +87,7 @@ func runTUI() {
 	}
 
 	p := tea.NewProgram(app, tea.WithAltScreen())
+	app.SetProgram(p)
 	if _, err := p.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error running TUI program: %v\n", err)
 		os.Exit(1)

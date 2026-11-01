@@ -217,6 +217,9 @@ window.triggerDownload = function() {
   if (!state.selectedEdition) return;
   document.getElementById("progress-wrapper").style.display = "block";
   document.getElementById("btn-start-download").disabled = true;
+  const status = document.getElementById("download-status");
+  status.style.color = "";
+  status.innerText = "Connecting to high-speed mirror...";
 
   if (window.startDownload) {
     window.startDownload(state.selectedEdition.id, state.selectedEdition.arch);
@@ -230,22 +233,32 @@ window.toggleLocalISO = function() {
 };
 
 // Callback from Go backend
-window.onDownloadProgress = function(percent, speedStr, done, err) {
+window.onDownloadProgress = function(percent, speedStr, done, err, downloadedGB, totalGB) {
   const bar = document.getElementById("download-progress-bar");
   const status = document.getElementById("download-status");
   const speed = document.getElementById("download-speed");
 
   bar.style.width = `${percent}%`;
-  status.innerText = `Downloading installation media... ${percent.toFixed(1)}%`;
+  if (downloadedGB !== undefined && totalGB !== undefined && totalGB > 0) {
+    status.innerText = `Downloading installation media... ${percent.toFixed(1)}% (${downloadedGB.toFixed(2)} / ${totalGB.toFixed(2)} GB)`;
+  } else {
+    status.innerText = `Downloading installation media... ${percent.toFixed(1)}%`;
+  }
   speed.innerText = speedStr;
 
-  if (done) {
-    status.innerText = "✔ Download completed and SHA-256 verified!";
-    document.getElementById("btn-start-download").disabled = false;
-  }
   if (err) {
-    status.innerText = `Error: ${err}`;
+    status.innerText = `✖ Error: ${err}`;
+    status.style.color = "var(--danger)";
     document.getElementById("btn-start-download").disabled = false;
+    return;
+  }
+
+  if (done) {
+    status.innerText = "✔ Download completed and genuine ISO verified!";
+    status.style.color = "var(--success)";
+    document.getElementById("btn-start-download").disabled = false;
+    const notice = document.getElementById("cached-notice");
+    if (notice) notice.style.display = "block";
   }
 };
 

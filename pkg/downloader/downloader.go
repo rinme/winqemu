@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -44,7 +45,12 @@ func IsISOCached(editionID, arch, customDir string) (bool, string, int64) {
 
 	target := filepath.Join(cacheDir, fmt.Sprintf("%s-%s.iso", editionID, arch))
 	fi, err := os.Stat(target)
-	if err == nil && fi.Size() > 100*1024*1024 {
+	if err == nil {
+		// Clean up any corrupt/dummy files (e.g. HTML error pages < 100MB)
+		if fi.Size() < 100*1024*1024 {
+			_ = os.Remove(target)
+			return false, target, 0
+		}
 		return true, target, fi.Size()
 	}
 	return false, target, 0
@@ -52,7 +58,8 @@ func IsISOCached(editionID, arch, customDir string) (bool, string, int64) {
 
 // Downloader manages HTTP downloads with resume and verification.
 type Downloader struct {
-	client *http.Client
+	client   *http.Client
+	MinBytes int64
 }
 
 // NewDownloader creates an instance with custom timeout and transport settings.
@@ -61,6 +68,7 @@ func NewDownloader() *Downloader {
 		client: &http.Client{
 			Timeout: 0, // No hard overall timeout for multi-gigabyte ISO downloads
 		},
+		MinBytes: 0,
 	}
 }
 
@@ -82,6 +90,7 @@ func (d *Downloader) Download(ctx context.Context, url, destPath, expectedSHA256
 	if err != nil {
 		return fmt.Errorf("invalid request: %w", err)
 	}
+	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
 
 	if existingBytes > 0 {
 		req.Header.Set("Range", fmt.Sprintf("bytes=%d-", existingBytes))
@@ -92,6 +101,13 @@ func (d *Downloader) Download(ctx context.Context, url, destPath, expectedSHA256
 		return fmt.Errorf("network request failed: %w", err)
 	}
 	defer resp.Body.Close()
+
+	// Guard against servers returning HTML landing pages, error pages, or CAPTCHA challenges
+	contentType := strings.ToLower(resp.Header.Get("Content-Type"))
+	if strings.Contains(contentType, "text/html") {
+		_ = os.Remove(partPath)
+		return fmt.Errorf("download server returned an HTML error/landing page (%s) instead of the ISO image", contentType)
+	}
 
 	var file *os.File
 	var totalBytes int64
@@ -181,6 +197,12 @@ func (d *Downloader) Download(ctx context.Context, url, destPath, expectedSHA256
 
 	_ = file.Sync()
 	_ = file.Close()
+
+	// Guard against incomplete/aborted downloads or small error bodies if MinBytes is configured
+	if d.MinBytes > 0 && downloaded < d.MinBytes {
+		_ = os.Remove(partPath)
+		return fmt.Errorf("download failed: received file is suspiciously small (%.2f MB < %.2f MB), not a valid ISO image", float64(downloaded)/(1024*1024), float64(d.MinBytes)/(1024*1024))
+	}
 
 	// Verify checksum if supplied
 	if expectedSHA256 != "" {
